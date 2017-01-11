@@ -1,0 +1,7 @@
+/stream/results/
+/stream/target/
+/stream/project/target/
+/stream/project/project/target
+/stream/.idea/
+/wordcount/
+.DS_Store
