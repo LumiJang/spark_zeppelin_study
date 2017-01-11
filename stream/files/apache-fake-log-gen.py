@@ -53,13 +53,14 @@ timestr = time.strftime("%Y%m%d-%H%M%S")
 otime = datetime.datetime.now()
 
 outFileName = 'access_log'+'.log' if not file_prefix else file_prefix+'_access_log'+'.log'
+outDirName = 'apache_logs/'
 
 for case in switch(output_type):
 	if case('LOG'):
-		f = open(outFileName,'w')
+		f = open(outDirName+outFileName,'w')
 		break
 	if case('GZ'):
-		f = gzip.open(outFileName+'.gz','w')
+		f = gzip.open(outDirName+outFileName+'.gz','w')
 		break
 	if case('CONSOLE'): pass
 	if case():

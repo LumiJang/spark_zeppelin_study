@@ -30,5 +30,6 @@ object Stream {
     println("==== await to terminate spark streaming context ====")
     ssc.awaitTerminationOrTimeout(10000)
     println("==== done! ====")
+    ssc.stop()
   }
 }

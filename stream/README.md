@@ -29,17 +29,21 @@ FlumUtils.createStream(ssc, ...) = DStream
   DStream.window(window duration, sliding duration)
   http://spark.apache.org/docs/latest/streaming-programming-guide.html#window-operations
 
-  - DStream.outputOperation(), WStream.outputOperation()
+  - DStream.outputOperation()
   http://spark.apache.org/docs/latest/streaming-programming-guide.html#output-operations-on-dstreams
 
 # for test
 
 nc (netcat) => open socket
-
 server $ nc -lk 7777
 client $ telnet localhost 7777
 => simple chat server
 
 fake-apache-log-generator
 https://github.com/kiritbasu/Fake-Apache-Log-Generator
+$ pip install -r requirements.txt
 $ python apache-fake-log-gen.py -n 0 -o LOG 
+
+# sbt assembly
+https://github.com/sbt/sbt-assembly
+project-root-dir/project/build.properties => check sbt version

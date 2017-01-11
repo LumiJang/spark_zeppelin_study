@@ -32,7 +32,7 @@ import org.apache.spark.streaming.dstream._
  *     --index_html_template ./src/main/resources/index.html.template
  */
 case class Config(WindowLength: Int = 3000, SlideInterval: Int = 1000,
-                  LogsDirectory: String = "files/access_log.log",
+                  LogsDirectory: String = "files/apache_logs",
                   CheckpointDirectory: String = "files/checkpoint",
                   OutputHTMLFile: String = "files/log_stats.html",
                   OutputDirectory: String = "files/out",
@@ -48,19 +48,34 @@ case class Config(WindowLength: Int = 3000, SlideInterval: Int = 1000,
 object LogAnalyzerAppMain {
 
   def main(args: Array[String]) {
-    val opts = new Config()
-    // Startup the Spark Conf.
-    val conf = new SparkConf()
-      .setMaster("local[4]")
-      .setAppName("A Databricks Reference Application: Logs Analysis with Spark");
-    val ssc = new StreamingContext(conf, opts.getWindowDuration())
+    val parser = new scopt.OptionParser[Config]("LogAnalyzerAppMain") {
+      head("LogAnalyzer", "0.1")
+      opt[Int]('w', "window_length") text("size of the window as an integer in miliseconds")
+      opt[Int]('s', "slide_interval") text("size of the slide inteval as an integer in miliseconds")
+      opt[String]('l', "logs_directory") text("location of the logs directory. if you don't have any logs use the fakelogs_dir script.")
+      opt[String]('c', "checkpoint_directory") text("location of the checkpoint directory.")
+      opt[String]('o', "output_directory") text("location of the output directory.")
+    }
+    val opts = parser.parse(args, new Config()).get
+    val conf = new SparkConf().setMaster("local[4]").setAppName("A Databricks Reference Application: Logs Analysis with Spark");
+    val ssc = new StreamingContext(conf, opts.getSlideDuration())
+
     // Checkpointing must be enabled to use the updateStateByKey function & windowed operations.
     ssc.checkpoint(opts.CheckpointDirectory)
-    // This methods monitors a directory for new files to read in for streaming.
-    val logDirectory = opts.LogsDirectory
-    val logData = ssc.textFileStream(logDirectory);
+
+    val logData = ssc.textFileStream(opts.LogsDirectory);
     val accessLogDStream = logData.map(line => ApacheAccessLog.parseFromLogLine(line)).cache()
+
+    accessLogDStream.print
+
     LogAnalyzerTotal.processAccessLogs(accessLogDStream)
     LogAnalyzerWindowed.processAccessLogs(accessLogDStream, opts)
+
+    println("==== start spark streaming context ====")
+    ssc.start()
+    println("==== await to terminate spark streaming context ====")
+    ssc.awaitTerminationOrTimeout(9000)
+    println("==== done! ====")
+    ssc.stop()
   }
 }

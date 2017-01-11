@@ -1,7 +1,11 @@
-/stream/results/
+/stream/.idea/
 /stream/target/
 /stream/project/target/
 /stream/project/project/target
-/stream/.idea/
+/stream/results/
+/stream/files/apache_logs/
+/stream/files/checkpoint/
+/stream/files/out/
+
 /wordcount/
 .DS_Store
