@@ -16,13 +16,16 @@ FlumUtils.createStream(ssc, ...) = DStream
   DStream.transformationFunc() = transformed DStream 
   ~= RDD transformation
   http://spark.apache.org/docs/latest/streaming-programming-guide.html#transformations-on-dstreams
-  * join (stream+steam, stream+dataset(RDD))
+  
+  join (stream+steam, stream+dataset(RDD))
   http://spark.apache.org/docs/latest/streaming-programming-guide.html#join-operations
 
   - stateful transformation
-  1. updateStateByKey
+
+  updateStateByKey
   http://spark.apache.org/docs/latest/streaming-programming-guide.html#updatestatebykey-operation
-  2. windowOperations
+
+  windowOperations
   DStream.window(window duration, sliding duration)
   http://spark.apache.org/docs/latest/streaming-programming-guide.html#window-operations
 
